@@ -2,26 +2,35 @@ package org.aua.aoop.post.product;
 
 import org.aua.aoop.post.Manager;
 import org.aua.aoop.post.conf.AppConfig;
+import org.jboss.logging.Logger;
 
+import javax.annotation.PostConstruct;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
-
+@Singleton
+@Startup
 public class ProductCatalog  implements Serializable {
+
+    private static final Logger logger =  Logger.getLogger(ProductCatalog.class);
     private Map<String, ProductSpecification> productList;
 
-    public ProductCatalog(Manager manager) {
+    public ProductCatalog() {}
+
+    @PostConstruct
+    private void SetupProductCatalog(){
         productList = new HashMap<>();
-        initFromFile(AppConfig.getInstance().getProductCatalogFileName(), manager);
+        logger.info("Product Catalog Successfully Loaded!!!");
     }
 
-    // Unused method
-//    public void addProduct(String UPC, String description, double price, String image, int qty) {
-//        productList.put(UPC, new ProductSpecification(UPC, description, price, image, qty));
-//    }
+    public void setManager(Manager manager){
+        initFromFile(AppConfig.getInstance().getProductCatalogFileName(), manager);
+    }
 
     public void saveToFile(String fileName) {
         try {

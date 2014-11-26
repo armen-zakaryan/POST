@@ -8,37 +8,31 @@ import org.aua.aoop.post.ex.ItemNotFoundException;
 import org.aua.aoop.post.ex.NotEnoughItemsException;
 import org.aua.aoop.post.ex.ProductException;
 import org.aua.aoop.post.product.ProductSpecification;
+import org.jboss.logging.Logger;
 
+import javax.ejb.EJB;
+import javax.ejb.Startup;
+import javax.ejb.Stateless;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-
+@Stateless
+@Startup
 public class Terminal {
-    /**/
+
+    @EJB transient Store store;
+    private static final Logger logger =  Logger.getLogger(Terminal.class);
+
     private UUID terminalID;
     private ShoopingCart currentShoopingCart;
-    private Cashier currentCashier;
-    private transient Store store;
     private SaleItem currentSaleItem;
 
-    /* *
-     * Constructor
-     * @param currentCashier
-     * @param  store
-     * @throws RemoteException
-     * */
-    public Terminal(Cashier currentCashier, Store store){
-        this.currentCashier = currentCashier;
-        this.store = store;
+    public Terminal(){
         terminalID = UUID.randomUUID();
+        logger.info(" User Terminal "+terminalID+" Started");
     }
 
-    /**
-     * Starts new sale
-     *
-     * @param customerName name of the customer
-     */
     public void startNewSale(String customerName){
         currentShoopingCart = new ShoopingCart(customerName);
         System.out.println(new Date() + "\t" + "New sale started");
@@ -94,7 +88,7 @@ public class Terminal {
             item.getProductSpecification().decreaseQty(item.getQty());
         }
 
-        store.getSalesLog().archiveSale(currentShoopingCart);
+        store.getArchive().archiveSale(currentShoopingCart);
         System.out.println(new Date() + "\t" + "Sale ended");
     }
 

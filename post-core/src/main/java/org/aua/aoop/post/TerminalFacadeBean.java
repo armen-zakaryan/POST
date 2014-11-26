@@ -5,6 +5,7 @@ import org.aua.aoop.post.payment.AbstractPayment;
 import org.jboss.logging.Logger;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.ejb.Remote;
 import javax.ejb.Startup;
 import javax.ejb.Stateless;
@@ -20,10 +21,9 @@ import javax.ejb.Stateless;
 @Remote(TerminalFacade.class)
 public class TerminalFacadeBean implements TerminalFacade {
 
-    private static final Logger logger =
-            Logger.getLogger(TerminalFacadeBean.class);
+    @EJB private Terminal terminal;
+    private static final Logger logger = Logger.getLogger(TerminalFacadeBean.class);
 
-    private Terminal terminal;
     @Override
     public void startNewSale(String customerName){
           terminal.startNewSale(customerName);
@@ -69,9 +69,4 @@ public class TerminalFacadeBean implements TerminalFacade {
         return terminal.productExists(UPC);
     }
 
-    @PostConstruct
-    private void SetupStore(){
-        Store store = new Store();
-        terminal = store.getTerminal();
-    }
 }

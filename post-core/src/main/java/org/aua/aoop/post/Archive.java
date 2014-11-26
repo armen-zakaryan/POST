@@ -1,18 +1,30 @@
 package org.aua.aoop.post;
 
 import org.aua.aoop.post.conf.AppConfig;
+import org.jboss.logging.Logger;
 
+import javax.annotation.PostConstruct;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class SalesLog implements Serializable {
+@Singleton
+@Startup
+public class Archive implements Serializable {
+
     private static String SAVE_FILE_URL = AppConfig.getInstance().getSalesLogSaveFileName();
+    private static final Logger logger =  Logger.getLogger(Archive.class);
     Map<UUID, ShoopingCart> processedSaleList;
 
-    public SalesLog() {
+    public Archive() { }
+
+    @PostConstruct
+    private void SetupArchive(){
         this.processedSaleList = new HashMap<>();
+        logger.info("Archive Successfully Loaded!!!");
     }
 
     public void archiveSale(ShoopingCart shoopingCart) {
@@ -25,9 +37,6 @@ public class SalesLog implements Serializable {
         }
     }
 
-//    public void printLogForCustomer(String customerName) {
-//    }
-
     public void saveSalesLogToFile() {
         try {
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(SAVE_FILE_URL));
@@ -39,13 +48,13 @@ public class SalesLog implements Serializable {
         }
     }
 
-    private static SalesLog loadSalesLogFromFile() {
-        SalesLog salesLog = null;
+    private static Archive loadSalesLogFromFile() {
+        Archive archive = null;
         ObjectInputStream objectInputStream = null;
         try {
             objectInputStream = new ObjectInputStream(new FileInputStream(SAVE_FILE_URL));
             Object loadedObj = objectInputStream.readObject();
-            salesLog = (SalesLog) loadedObj;
+            archive = (Archive) loadedObj;
 
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -59,6 +68,6 @@ public class SalesLog implements Serializable {
             }
         }
 
-        return salesLog == null ? new SalesLog() : salesLog;
+        return archive == null ? new Archive() : archive;
     }
 }
