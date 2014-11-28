@@ -2,13 +2,14 @@ package org.aua.aoop.post;
 
 import org.aua.aoop.post.payment.AbstractPayment;
 
-import javax.ejb.Stateful;
+import javax.ejb.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+@Stateful
 public class ShoopingCart implements Serializable {
     private UUID saleID;
     private List<SaleItem> saleItems;
@@ -17,10 +18,11 @@ public class ShoopingCart implements Serializable {
     private Date dateTime;
     private double total;
 
+
     public ShoopingCart() {
     }
 
-    public ShoopingCart(String customerName) {
+    public void init(String customerName) {
         this.customerName = customerName;
         dateTime = new Date();
         saleID = UUID.randomUUID();

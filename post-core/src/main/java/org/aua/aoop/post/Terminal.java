@@ -22,10 +22,11 @@ import java.util.UUID;
 public class Terminal {
 
     @EJB transient Store store;
+    @EJB ShoopingCart currentShoopingCart;
+
     private static final Logger logger =  Logger.getLogger(Terminal.class);
 
     private UUID terminalID;
-    private ShoopingCart currentShoopingCart;
     private SaleItem currentSaleItem;
 
     public Terminal(){
@@ -34,7 +35,7 @@ public class Terminal {
     }
 
     public void startNewSale(String customerName){
-        currentShoopingCart = new ShoopingCart(customerName);
+        currentShoopingCart.init(customerName);
         System.out.println(new Date() + "\t" + "New sale started");
     }
 
@@ -87,10 +88,12 @@ public class Terminal {
         for (SaleItem item : saleItems) {
             item.getProductSpecification().decreaseQty(item.getQty());
         }
-
-        store.getArchive().archiveSale(currentShoopingCart);
+        //This is against OOP principles However since we could not keep steteful bean ShoopingCart in Archive Thus we have created a kind of copy of the shoping cart which is not a bean for keeping in Archive
+        store.getArchive().archiveSale(new ArchiveRecord(currentShoopingCart.getSaleItems(),currentShoopingCart.getPayment(), currentShoopingCart.getCustomerName(), currentShoopingCart.getSaleID(), currentShoopingCart.getTotal()));
         System.out.println(new Date() + "\t" + "Sale ended");
     }
+
+
 
     public String getReceipt(){
         return currentShoopingCart.toString();

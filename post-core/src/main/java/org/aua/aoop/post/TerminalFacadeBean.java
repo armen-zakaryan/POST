@@ -1,5 +1,4 @@
 package org.aua.aoop.post;
-
 import org.aua.aoop.post.ex.ProductException;
 import org.aua.aoop.post.payment.AbstractPayment;
 import org.jboss.logging.Logger;

@@ -17,9 +17,9 @@ public class Archive implements Serializable {
 
     private static String SAVE_FILE_URL = AppConfig.getInstance().getSalesLogSaveFileName();
     private static final Logger logger =  Logger.getLogger(Archive.class);
-    Map<UUID, ShoopingCart> processedSaleList;
+    Map<UUID, ArchiveRecord> processedSaleList;
 
-    public Archive() { }
+    public Archive() {}
 
     @PostConstruct
     private void SetupArchive(){
@@ -27,13 +27,15 @@ public class Archive implements Serializable {
         logger.info("Archive Successfully Loaded!!!");
     }
 
-    public void archiveSale(ShoopingCart shoopingCart) {
-        processedSaleList.put(shoopingCart.getSaleID(), shoopingCart);
+    public void archiveSale(ArchiveRecord archiveRecord) {
+        System.out.println("Adddddddddddddddddddding **********************************");
+        processedSaleList.put(archiveRecord.getSaleID(), archiveRecord);
     }
 
     public void printLog() {
-        for (ShoopingCart shoopingCart : processedSaleList.values()) {
-            System.out.println("\r\n" + shoopingCart.toString());
+        System.out.println("Printing Archive  *******************************");
+        for (ArchiveRecord archiveRecord : processedSaleList.values()) {
+            System.out.println("\r\n" + archiveRecord.toString());
         }
     }
 
